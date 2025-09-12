@@ -3,7 +3,7 @@ import { getUserByClerkId } from "@/utils/auth";
 import NewEntry from "@/components/NewEntryCard";
 import EntryCard from "@/components/EntryCard";
 
-const getEntires = async () => {
+const getEntries = async () => {
     const user = await getUserByClerkId();
 
     const entries = await prisma.journalEntry.findMany({
@@ -19,7 +19,7 @@ const getEntires = async () => {
 }
 
 const journalPage = async () => {
-    const journalEntries = await getEntires();
+    const journalEntries = await getEntries();
     console.log("Journals:",  journalEntries);
 
     return (
