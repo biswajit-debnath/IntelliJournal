@@ -33,6 +33,8 @@ model JournalEntry {
   analysis Analysis?
 
   content String @db.Text
+
+  @@unique([userId, id])
 }
 
 model Analysis {
