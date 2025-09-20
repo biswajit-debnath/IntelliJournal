@@ -47,6 +47,7 @@ model Analysis {
 
   mood     String
   summery  String  @db.Text
+  subject String @db.Text
   color    String
   negative Boolean
 }
