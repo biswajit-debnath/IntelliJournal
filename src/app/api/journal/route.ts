@@ -28,8 +28,8 @@ export const POST = async () => {
 
     return NextResponse.json({
         data: {
-            entry,
-            analysisCreation 
+            ...entry,
+            analysis:analysisCreation 
         }
     });
 
