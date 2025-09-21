@@ -2,6 +2,10 @@ import { ChatOpenAI } from "@langchain/openai";
 import { StructuredOutputParser } from "@langchain/core/output_parsers"
 import { PromptTemplate } from "@langchain/core/prompts"
 import * as z from "zod";
+import { Document } from "@langchain/core/documents"
+import { OpenAIEmbeddings } from "@langchain/openai"
+import { MemoryVectorStore } from "langchain/vectorstores/memory"
+import { loadQARefineChain } from "langchain/chains"
 
 const schema = z.object({
     mood: z.
@@ -54,6 +58,37 @@ const analyze = async (content) => {
     }
 }
 
+const askQuestion = async (allJournalEntries, question) => {
+    const docs = allJournalEntries.map(journal => {
+        return new Document({
+            pageContent: journal.content,
+            metadata: {
+                id: journal.id,
+                createdAt: journal.createdAt
+            }
+        })
+    });
+
+    const embeddings = new OpenAIEmbeddings();
+    const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
+    const similarityDocs = await vectorStore.similaritySearch(question);
+
+    const model = new ChatOpenAI({
+        temperature: 0,
+        model: "gpt-4.1-mini"
+    });
+    const chain = loadQARefineChain(model);
+    
+    const res = await chain.invoke({
+        input_documents: similarityDocs,
+        question
+    });
+    
+
+    return res.output_text;
+}
+
 export {
-    analyze
+    analyze,
+    askQuestion
 };
