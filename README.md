@@ -6,6 +6,7 @@
 [![Prisma](https://img.shields.io/badge/Prisma-6.15.0-2D3748?style=flat&logo=prisma&logoColor=white)](https://www.prisma.io/)
 [![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4-412991?style=flat&logo=openai&logoColor=white)](https://openai.com/)
 [![Clerk](https://img.shields.io/badge/Clerk-Auth-6C47FF?style=flat&logo=clerk&logoColor=white)](https://clerk.dev/)
+![Hacktoberfest](https://img.shields.io/badge/Hacktoberfest-2025-blueviolet?style=flat-square&logo=github)
 
 ## 🌟 Overview
 
