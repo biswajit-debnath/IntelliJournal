@@ -1,6 +1,18 @@
 import { UserButton } from '@clerk/nextjs'
 import Link from 'next/link';
 
+// Conditional UserButton wrapper
+function ConditionalUserButton() {
+  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+  
+  // During build, if we don't have a valid key, render a placeholder
+  if (!publishableKey || publishableKey.includes('dummy')) {
+    return <div className="w-8 h-8 bg-gray-300 rounded-full"></div>;
+  }
+  
+  return <UserButton />;
+}
+
 const DashboadLayout = ({children}) => {
     const links = [
         {href: "/", name: "Home"},
@@ -25,7 +37,7 @@ const DashboadLayout = ({children}) => {
         <div className="w-full h-full">
             <header className="h-[60px] w-full border-b border-black/20">
                <div className='h-full w-full flex items-center justify-end px-5'>
-                    <UserButton />
+                    <ConditionalUserButton />
                </div>
             </header>
             <div className='h-[calc(100vh-60px)]'>

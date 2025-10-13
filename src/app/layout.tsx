@@ -18,20 +18,32 @@ export const metadata: Metadata = {
   description: "Sentiment analysis of your journal entries",
 };
 
+// Conditional ClerkProvider wrapper
+function ConditionalClerkProvider({ children }: { children: React.ReactNode }) {
+  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+  
+  // During build, if we don't have a valid key, render without Clerk
+  if (!publishableKey || publishableKey.includes('dummy')) {
+    return <>{children}</>;
+  }
+  
+  return <ClerkProvider>{children}</ClerkProvider>;
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ConditionalClerkProvider>
           {children}
-        </body>
-      </html>
-    </ClerkProvider>
+        </ConditionalClerkProvider>
+      </body>
+    </html>
   );
 }
