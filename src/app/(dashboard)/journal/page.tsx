@@ -6,18 +6,24 @@ import Link from "next/link";
 import Question from "@/components/Question"
 
 const getEntries = async () => {
-    const user = await getUserByClerkId();
+    try {
+        const user = await getUserByClerkId();
 
-    const entries = await prisma.journalEntry.findMany({
-        where: {
-            userId: user.id
-        },
-        orderBy: {
-            createdAt: 'desc'
-        }
-    });
+        const entries = await prisma.journalEntry.findMany({
+            where: {
+                userId: user.id
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
 
-    return entries;
+        return entries;
+    } catch (error) {
+        // During build or when auth fails, return empty array
+        console.log("Auth error during build:", error);
+        return [];
+    }
 }
 
 const journalPage = async () => {
