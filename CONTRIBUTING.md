@@ -34,20 +34,25 @@ Plan your testing accordingly to stay within the rate limit.
 2. **Clone** your fork locally:
    ```bash
    git clone https://github.com/<your-username>/<repo-name>.git
+   cd <repo-name>
    ```
-3. **Create a new branch** for your feature or fix:
+3. **Checkout to dev branch:**
+   ```bash
+   git checkout dev
+   ```
+4. **Create a new branch** for your feature or fix:
    ```bash
    git checkout -b feature/your-feature-name
    ```
-4. **Make your changes** and **commit** them:
+5. **Make your changes** and **commit** them:
    ```bash
    git commit -m "Add: brief description of your change"
    ```
-5. **Push** your branch:
+6. **Push** your branch:
    ```bash
    git push origin feature/your-feature-name
    ```
-6. **Open a Pull Request (PR)** from your forked repo.
+7. **Open a Pull Request (PR)** from your forked repo.
 
 ---
 
