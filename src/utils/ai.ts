@@ -6,6 +6,7 @@ import { Document } from "@langchain/core/documents"
 import { OpenAIEmbeddings } from "@langchain/openai"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 import { loadQARefineChain } from "langchain/chains"
+import { checkAndUpdateAIAPILimit } from "./helper";
 
 const schema = z.object({
     mood: z.
@@ -42,7 +43,7 @@ const getPrompt = async (content) => {
    return response;
 }
 
-const analyze = async (content) => {
+const analyze = checkAndUpdateAIAPILimit(async (content) => {
     const prompt = await getPrompt(content);
     const model = new ChatOpenAI({
         temperature: 0,
@@ -52,13 +53,13 @@ const analyze = async (content) => {
     const result = await model.invoke(prompt);
 
     try{
-       return parser.parse(result.content);
+       return parser.parse(typeof result.content === 'string' ? result.content : JSON.stringify(result.content));
     }catch(e) {
         console.log(e)
     }
-}
+});
 
-const askQuestion = async (allJournalEntries, question) => {
+const askQuestion = checkAndUpdateAIAPILimit(async (allJournalEntries, question) => {
     const docs = allJournalEntries.map(journal => {
         return new Document({
             pageContent: journal.content,
@@ -86,9 +87,10 @@ const askQuestion = async (allJournalEntries, question) => {
     
 
     return res.output_text;
-}
+});
+
 
 export {
     analyze,
-    askQuestion
+    askQuestion    
 };

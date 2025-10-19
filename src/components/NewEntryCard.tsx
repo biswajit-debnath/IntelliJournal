@@ -1,12 +1,18 @@
 'use client';
 import { createNewEntry } from "@/utils/api";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const NewEntry =() => {
     const router = useRouter();
     const handleOnClick = async () => {
-        const entry = await createNewEntry();
-        router.push(`/journal/${entry.id}`)
+        const result = await createNewEntry();
+        
+        if(result.limitExceeded) {
+            toast.error("AI API limit exceeded. Journal created without analysis. Please ask admin for increase.");
+        }
+        
+        router.push(`/journal/${result.entry.id}`)
     }
     return (
     <div className="overflow-hidden cursor-pointer bg-white rounded-lg shadow">

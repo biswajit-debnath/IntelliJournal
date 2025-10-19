@@ -20,19 +20,25 @@ export const PATCH = async (req: Request, {params}) => {
     })
 
     const analysis = await analyze(content);
+    let updatedAnalysis = null;
 
-    const updatedAnalysis = await prisma.analysis.upsert({
-        create: {
-            entryId : updatedEntry.id,
-            ...analysis
-        },
-        update: {
-            ...analysis
-        },
-        where: {
-            entryId: updatedEntry.id
-        }
-    })
+    if(analysis) {
+        updatedAnalysis = await prisma.analysis.upsert({
+            create: {
+                entryId : updatedEntry.id,
+                ...analysis
+            },
+            update: {
+                ...analysis
+            },
+            where: {
+                entryId: updatedEntry.id
+            }
+        })
+    }
 
-    return NextResponse.json({data: {...updatedEntry, analysis: updatedAnalysis}});
+    return NextResponse.json({
+        data: {...updatedEntry, analysis: updatedAnalysis},
+        limitExceeded: !analysis
+    });
 }

@@ -19,6 +19,12 @@ const POST = async (req: Request) => {
     });
 
     const qaResponse = await askQuestion(userJournals, question);
+    if(!qaResponse) {
+        return NextResponse.json({
+            data: null,
+            limitExceeded: true
+        })
+    }
 
     return NextResponse.json({
         data: qaResponse

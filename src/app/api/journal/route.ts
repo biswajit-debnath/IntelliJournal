@@ -16,21 +16,25 @@ export const POST = async () => {
     });
 
     const analysis = await analyze(content);
-
-    const analysisCreation = await prisma.analysis.create({
+    let analysisCreation;
+    
+    if(analysis) {
+        analysisCreation = await prisma.analysis.create({
         data: {
             entryId: entry.id,
             ...analysis
         }
     })
+    }
 
     revalidatePath("/journal");
 
     return NextResponse.json({
         data: {
             ...entry,
-            analysis:analysisCreation 
-        }
+            analysis: analysisCreation
+        },
+        limitExceeded: !analysis // Flag to indicate if the limit was exceeded
     });
 
 

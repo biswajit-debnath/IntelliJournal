@@ -11,7 +11,10 @@ export const updateEntry = async (journalId, content) => {
 
     if(res.ok) {
         const resData = await res.json()
-        return resData.data;
+        return {
+            ...resData.data,
+            limitExceeded: resData.limitExceeded
+        };
     }
 }
 
@@ -22,7 +25,10 @@ export const createNewEntry = async () => {
 
     if(res.ok) {
         const resData = await res.json()
-        return resData.data;
+        return {
+            entry: resData.data,
+            limitExceeded: resData.limitExceeded
+        };
     }
 }
 
@@ -34,6 +40,9 @@ export const askQuestion = async (question) => {
 
     if(res.ok) {
         const resData = await res.json();
-        return resData.data;
+        return {
+            data: resData.data,
+            limitExceeded: resData.limitExceeded
+        };
     }
 }
