@@ -27,7 +27,7 @@ const schema = z.object({
 
 const parser = StructuredOutputParser.fromZodSchema(schema);
 
-const getPrompt = async (content) => {
+const getPrompt = async (content: string) => {
     const formattedInstruction = parser.getFormatInstructions();
 
     const prompt = new PromptTemplate({
@@ -42,7 +42,7 @@ const getPrompt = async (content) => {
    return response;
 }
 
-const analyze = async (content) => {
+const analyze = async (content: string) => {
     const prompt = await getPrompt(content);
     const model = new ChatOpenAI({
         temperature: 0,
@@ -52,13 +52,13 @@ const analyze = async (content) => {
     const result = await model.invoke(prompt);
 
     try{
-       return parser.parse(result.content);
+       return parser.parse(result.content as string);
     }catch(e) {
         console.log(e)
     }
 }
 
-const askQuestion = async (allJournalEntries, question) => {
+const askQuestion = async (allJournalEntries: any[], question: string) => {
     const docs = allJournalEntries.map(journal => {
         return new Document({
             pageContent: journal.content,

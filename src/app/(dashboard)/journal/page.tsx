@@ -1,9 +1,6 @@
 import { prisma } from "@/utils/db";
 import { getUserByClerkId } from "@/utils/auth";
-import NewEntry from "@/components/NewEntryCard";
-import EntryCard from "@/components/EntryCard";
-import Link from "next/link";
-import Question from "@/components/Question"
+import JournalsList from "@/components/JournalsList";
 
 const getEntries = async () => {
     try {
@@ -15,6 +12,9 @@ const getEntries = async () => {
             },
             orderBy: {
                 createdAt: 'desc'
+            },
+            include: {
+                analysis: true
             }
         });
 
@@ -30,23 +30,19 @@ const journalPage = async () => {
     const journalEntries = await getEntries();
     console.log("Journals:",  journalEntries);
 
-    return (
-        <div className="p-10 bg-zinc-400/20 h-full">
-            <h2 className="text-3xl mb-2">Journals</h2>
-            <div className="my-6">
-                <Question />
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-                <NewEntry />
-                {journalEntries.map((entry) => (
-                    <Link href={`/journal/${entry.id}`} key={entry.id}>
-                        <EntryCard entry={entry} />
-                    </Link>
-                ))}
+    // Convert Date objects to strings for client components
+    const serializedEntries = journalEntries.map(entry => ({
+        ...entry,
+        createdAt: entry.createdAt.toISOString(),
+        updatedAt: entry.updatedAt.toISOString(),
+        analysis: entry.analysis ? {
+            ...entry.analysis,
+            createdAt: entry.analysis.createdAt.toISOString(),
+            updatedAt: entry.analysis.updatedAt.toISOString()
+        } : null
+    }));
 
-            </div>
-        </div>
-    )
+    return <JournalsList initialEntries={serializedEntries} />;
 }
 
 export default journalPage;

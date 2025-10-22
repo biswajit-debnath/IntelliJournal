@@ -20,7 +20,11 @@ export const POST = async () => {
     const analysisCreation = await prisma.analysis.create({
         data: {
             entryId: entry.id,
-            ...analysis
+            mood: analysis?.mood || '',
+            summery: analysis?.summery || '',
+            subject: analysis?.subject || '',
+            color: analysis?.color || '#000000',
+            negative: analysis?.negative || false
         }
     })
 
@@ -32,6 +36,32 @@ export const POST = async () => {
             analysis:analysisCreation 
         }
     });
+}
 
+export const GET = async () => {
+    try {
+        const user = await getUserByClerkId();
 
+        const entries = await prisma.journalEntry.findMany({
+            where: {
+                userId: user.id
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            include: {
+                analysis: true
+            }
+        });
+
+        return NextResponse.json({
+            entries
+        });
+    } catch (error) {
+        console.error('Failed to fetch entries:', error);
+        return NextResponse.json(
+            { error: 'Failed to fetch entries' },
+            { status: 500 }
+        );
+    }
 }
